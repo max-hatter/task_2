@@ -11,7 +11,8 @@ def main():
 
         print_config(args)
 
-        print(f"\n[Сбор данных] Получение зависимостей для пакета '{args.package}'...")
+        print(f"\n[Сбор данных] Получение зависимостей для пакета "
+              f"'{args.package}'...")
         repo_url = args.repo
         if args.mode == "url" and repo_url in ("default", "nuget", ""):
             repo_url = "https://api.nuget.org/v3-flatcontainer"
