@@ -1,10 +1,12 @@
 import urllib.request
 import urllib.error
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ElemTree
 import os
 
+con = 404
 
-def fetch_dependencies(repo_url: str, package: str, version: str, mode: str) -> list[str]:
+def fetch_dependencies(repo_url: str, package: str, version: str, mode: str) \
+        -> list[str]:
     if mode == "url":
         return _fetch_from_url(repo_url, package, version)
     elif mode == "file":
@@ -23,11 +25,13 @@ def _fetch_from_url(base_url: str, package: str, version: str) -> list[str]:
         with urllib.request.urlopen(url, timeout=10) as response:
             xml_data = response.read()
     except urllib.error.HTTPError as e:
-        if e.code == 404:
-            raise FileNotFoundError(f"Пакет '{package}' версии '{version}' не найден в репозитории.")
+        if e.code == con:
+            raise FileNotFoundError(f"Пакет '{package}' версии '{version}' "
+                                    f"не найден в репозитории.")
         raise ConnectionError(f"Ошибка сети (HTTP {e.code}): {e.reason}")
     except urllib.error.URLError as e:
-        raise ConnectionError(f"Не удалось подключиться к репозиторию: {e.reason}")
+        raise ConnectionError(f"Не удалось подключиться к репозиторию: "
+                              f"{e.reason}")
 
     return _parse_nuspec_xml(xml_data)
 
@@ -39,7 +43,8 @@ def _fetch_from_file(filepath: str) -> list[str]:
     with open(filepath, "rb") as f:
         content = f.read()
 
-    if filepath.lower().endswith(".nuspec") or content.strip().startswith(b"<?xml"):
+    if (filepath.lower().endswith(".nuspec") or
+            content.strip().startswith(b"<?xml")):
         return _parse_nuspec_xml(content)
     else:
         text = content.decode("utf-8")
@@ -48,8 +53,8 @@ def _fetch_from_file(filepath: str) -> list[str]:
 
 def _parse_nuspec_xml(xml_data: bytes) -> list[str]:
     try:
-        root = ET.fromstring(xml_data)
-    except ET.ParseError as e:
+        root = ElemTree.fromstring(xml_data)
+    except ElemTree.ParseError as e:
         raise ValueError(f"Ошибка формата XML в файле .nuspec: {e}")
 
     dependencies = set()
