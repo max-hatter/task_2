@@ -50,16 +50,20 @@ def validate_config(args: argparse.Namespace) -> None:
 
     if args.mode == "file":
         if not os.path.exists(args.repo):
-            raise FileNotFoundError(f"Файл тестового репозитория не найден: {args.repo}")
+            raise FileNotFoundError(f"Файл тестового репозитория не найден:"
+                                    f" {args.repo}")
     elif args.mode == "url":
-        if not (args.repo.startswith("http://") or args.repo.startswith("https://")):
+        if not (args.repo.startswith("http://") or
+                args.repo.startswith("https://")):
             raise ValueError(f"Некорректный URL репозитория: {args.repo}")
 
     if not re.match(r"^\d+\.\d+(\.\d+)?$", args.version):
-        raise ValueError(f"Неверный формат версии '{args.version}'. Ожидается, например, 1.0.0")
+        raise ValueError(f"Неверный формат версии '{args.version}'. "
+                         f"Ожидается, например, 1.0.0")
 
     if not args.output.lower().endswith(".png"):
-        raise ValueError(f"Файл графа должен иметь расширение .png, получено: {args.output}")
+        raise ValueError(f"Файл графа должен иметь расширение .png, получено:"
+                         f" {args.output}")
 
 
 def print_config(args: argparse.Namespace) -> None:
@@ -69,4 +73,5 @@ def print_config(args: argparse.Namespace) -> None:
     print(f"Режим работы        : {args.mode}")
     print(f"Версия пакета       : {args.version}")
     print(f"Выходной файл графа : {args.output}")
-    print(f"ASCII-дерево        : {'Включено' if args.ascii else 'Выключено'}")
+    print(f"ASCII-дерево        : {'Включено' if args.ascii else 
+    'Выключено'}")
