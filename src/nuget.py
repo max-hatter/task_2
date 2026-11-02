@@ -1,6 +1,6 @@
 import urllib.request
 import urllib.error
-import xml.etree.ElementTree as ElemTree
+import xml.etree.ElementTree as elem_tree
 import os
 
 con = 404
