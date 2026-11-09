@@ -65,7 +65,8 @@ def build_dfs_recursive(
     _dfs(start_node, 0)
     return result
 
-def get_loading_order(graph: dict[str, list[str]], start_node: str) -> list[str]:
+def get_loading_order(graph: dict[str, list[str]], start_node: str) ->\
+        list[str]:
     order = []
     visited = set()
     stack = set()
