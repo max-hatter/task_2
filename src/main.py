@@ -30,6 +30,17 @@ def main():
         )
         print(" -> ".join(dfs_result))
 
+        print("\nПорядок загрузки (Топосорт)")
+        try:
+            load_order = gr.get_loading_order(graph_data, args.package)
+            print(" -> ".join(load_order))
+
+            print("\n[Сравнение с менеджером пакетов]")
+            print("Реальный NuGet загружает зависимости от листьев к корню.")
+            print("Наш алгоритм строит такой же порядок.")
+        except ValueError as e:
+            print(f"Ошибка: {e}")
+
     except Exception as e:
         print(f"\n[ОШИБКА] {e}", file=sys.stderr)
         sys.exit(1)

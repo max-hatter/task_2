@@ -61,3 +61,27 @@ def build_dfs_recursive(
 
     _dfs(start_node, 0)
     return result
+
+def get_loading_order(graph: dict[str, list[str]], start_node: str) -> list[str]:
+    order = []
+    visited = set()
+    stack = set()
+
+    def _topo_sort(node: str):
+        if node in stack:
+            raise ValueError(
+                "Циклическая зависимость. Порядок загрузки невозможен."
+            )
+        if node in visited:
+            return
+
+        stack.add(node)
+        for dep in graph.get(node, []):
+            _topo_sort(dep)
+        stack.remove(node)
+
+        visited.add(node)
+        order.append(node)
+
+    _topo_sort(start_node)
+    return order
