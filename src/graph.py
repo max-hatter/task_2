@@ -96,11 +96,24 @@ ASCII_TEE = "├── "
 
 def generate_mermaid(graph: dict[str, list[str]]) -> str:
     lines = ["graph TD"]
+    node_ids = {}
+
+    for node in graph.keys():
+        if node not in node_ids:
+            node_ids[node] = f"N{len(node_ids)}"
+
     for node, deps in graph.items():
-        if not deps:
-            lines.append(f"    {node}")
+        safe_node = node_ids[node]
+        lines.append(f'    {safe_node}["{node}"]')
+
         for dep in deps:
-            lines.append(f"    {node} --> {dep}")
+            if dep not in node_ids:
+                node_ids[dep] = f"N{len(node_ids)}"
+                lines.append(f'    {node_ids[dep]}["{dep}"]')
+
+            safe_dep = node_ids[dep]
+            lines.append(f"    {safe_node} --> {safe_dep}")
+
     return "\n".join(lines)
 
 def save_mermaid_png(mermaid_code: str, output_path: str) -> None:

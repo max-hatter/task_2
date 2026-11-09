@@ -22,7 +22,7 @@ def main():
             deps = fetch_dependencies(
                 repo_url, args.package, args.version, args.mode
             )
-            graph_data[args.package] = [d.split()[0] for d in deps]
+            graph_data[args.package] = deps
 
         print("\nОбход в глубину (DFS)")
         dfs_result = gr.build_dfs_recursive(
