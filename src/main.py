@@ -45,6 +45,23 @@ def main():
         print(f"\n[ОШИБКА] {e}", file=sys.stderr)
         sys.exit(1)
 
+    print("\nВизуализация")
+
+    mermaid_text = gr.generate_mermaid(graph_data)
+    print("Код Mermaid:")
+    print(mermaid_text)
+
+    print(f"\nСохранение PNG в файл: {args.output}...")
+    try:
+        gr.save_mermaid_png(mermaid_text, args.output)
+        print(f"Успешно сохранено: {args.output}")
+    except Exception as e:
+        print(f"Ошибка сохранения картинки: {e}")
+
+    if args.ascii:
+        print("\nASCII-дерево:")
+        print(gr.generate_ascii_tree(graph_data, args.package))
+
 
 if __name__ == "__main__":
     main()

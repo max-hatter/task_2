@@ -1,4 +1,7 @@
 import os
+import networkx as n_x
+import matplotlib.pyplot as math_plt
+
 
 MAX_DEPTH_DEFAULT = 5
 CYCLE_MARKER = "[Цикл]"
@@ -85,3 +88,62 @@ def get_loading_order(graph: dict[str, list[str]], start_node: str) -> list[str]
 
     _topo_sort(start_node)
     return order
+
+ASCII_INDENT = "  "
+ASCII_LAST = "└── "
+ASCII_TEE = "├── "
+
+
+def generate_mermaid(graph: dict[str, list[str]]) -> str:
+    lines = ["graph TD"]
+    for node, deps in graph.items():
+        if not deps:
+            lines.append(f"    {node}")
+        for dep in deps:
+            lines.append(f"    {node} --> {dep}")
+    return "\n".join(lines)
+
+def save_mermaid_png(mermaid_code: str, output_path: str) -> None:
+    G = n_x.DiGraph()
+
+    lines = mermaid_code.splitlines()
+    for line in lines:
+        if "-->" in line:
+            parts = line.split("-->")
+            node1 = parts[0].strip()
+            node2 = parts[1].strip()
+            G.add_edge(node1, node2)
+
+    math_plt.figure(figsize=(12, 8))
+    pos = n_x.spring_layout(G, k=1.5)
+    n_x.draw(
+        G, pos, with_labels=True, node_color='lightblue',
+        node_size=3000, font_size=10, arrows=True,
+        arrowsize=20, edge_color='gray'
+    )
+    math_plt.savefig(output_path, format="PNG", bbox_inches='tight')
+    math_plt.close()
+
+def generate_ascii_tree(
+        graph: dict[str, list[str]], node: str,
+        prefix: str = "", is_last: bool = True,
+        visited: set = None
+) -> str:
+    if visited is None:
+        visited = set()
+
+    result = ""
+    if node not in visited:
+        connector = ASCII_LAST if is_last else ASCII_TEE
+        result += prefix + connector + node + "\n"
+        visited.add(node)
+
+        children = graph.get(node, [])
+        new_prefix = prefix + (ASCII_INDENT if is_last else "│ ")
+
+        for i, child in enumerate(children):
+            child_is_last = (i == len(children) - 1)
+            result += generate_ascii_tree(
+                graph, child, new_prefix, child_is_last, visited
+            )
+    return result

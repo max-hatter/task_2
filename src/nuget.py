@@ -53,8 +53,8 @@ def _fetch_from_file(filepath: str) -> list[str]:
 
 def _parse_nuspec_xml(xml_data: bytes) -> list[str]:
     try:
-        root = ElemTree.fromstring(xml_data)
-    except ElemTree.ParseError as e:
+        root = elem_tree.fromstring(xml_data)
+    except elem_tree.ParseError as e:
         raise ValueError(f"Ошибка формата XML в файле .nuspec: {e}")
 
     dependencies = set()
