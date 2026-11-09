@@ -118,7 +118,7 @@ def generate_mermaid(graph: dict[str, list[str]]) -> str:
     return "\n".join(lines)
 
 def save_mermaid_png(mermaid_code: str, output_path: str) -> None:
-    G = n_x.DiGraph()
+    graph_d = n_x.DiGraph()
 
     lines = mermaid_code.splitlines()
     for line in lines:
@@ -126,12 +126,12 @@ def save_mermaid_png(mermaid_code: str, output_path: str) -> None:
             parts = line.split("-->")
             node1 = parts[0].strip()
             node2 = parts[1].strip()
-            G.add_edge(node1, node2)
+            graph_d.add_edge(node1, node2)
 
     math_plt.figure(figsize=(12, 8))
-    pos = n_x.spring_layout(G, k=1.5)
+    pos = n_x.spring_layout(graph_d, k=1.5)
     n_x.draw(
-        G, pos, with_labels=True, node_color='lightblue',
+        graph_d, pos, with_labels=True, node_color='lightblue',
         node_size=3000, font_size=10, arrows=True,
         arrowsize=20, edge_color='gray'
     )
